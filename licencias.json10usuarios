@@ -1,0 +1,54 @@
+{
+  "licencias": [
+    {
+      "clave": "ABC123-DEF456-GHI789",
+      "estado": "activo",
+      "usuario": "cliente1@ejemplo.com"
+    },
+    {
+      "clave": "XYZ987-UVW654-RST321",
+      "estado": "revocado",
+      "usuario": "cliente2@ejemplo.com"
+    },
+    {
+      "clave": "LMN111-OPQ222-RST333",
+      "estado": "activo",
+      "usuario": "cliente3@ejemplo.com"
+    },
+    {
+      "clave": "AAA111-BBB222-CCC333",
+      "estado": "activo",
+      "usuario": "cliente4@ejemplo.com"
+    },
+    {
+      "clave": "DDD444-EEE555-FFF666",
+      "estado": "activo",
+      "usuario": "cliente5@ejemplo.com"
+    },
+    {
+      "clave": "GGG777-HHH888-III999",
+      "estado": "revocado",
+      "usuario": "cliente6@ejemplo.com"
+    },
+    {
+      "clave": "JJJ000-KKK111-LLL222",
+      "estado": "activo",
+      "usuario": "cliente7@ejemplo.com"
+    },
+    {
+      "clave": "MMM333-NNN444-OOO555",
+      "estado": "activo",
+      "usuario": "cliente8@ejemplo.com"
+    },
+    {
+      "clave": "PPP666-QQQ777-RRR888",
+      "estado": "activo",
+      "usuario": "cliente9@ejemplo.com"
+    },
+    {
+      "clave": "SSS999-TTT000-UUU111",
+      "estado": "activo",
+      "usuario": "cliente10@ejemplo.com"
+    }
+  ]
+}
