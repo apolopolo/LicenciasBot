@@ -1,0 +1,12 @@
+{
+  "licencias": [
+    {
+      "clave": "ABC123-DEF456-GHI789",
+      "estado": "activo",
+      "usuario": "cliente1@ejemplo.com"
+    },
+    {
+      "clave": "XYZ987-UVW654-RST321",
+      "estado": "revocado",
+      "usuario": "cliente2@ejemplo.com"
+    }
