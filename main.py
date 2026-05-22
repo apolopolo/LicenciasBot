@@ -1,61 +1,105 @@
 from telethon import TelegramClient, events
+import re
 
-# =========================
-# CONFIGURACIÓN TELEGRAM
-# =========================
+# =====================================
+# CONFIG TELEGRAM
+# =====================================
 
 api_id = 12345678
 api_hash = "TU_API_HASH"
 telefono = "+51999999999"
 
-# Canal origen
-canal_entrada = "CANAL_ORIGEN"
+# =====================================
+# CLIENTE
+# =====================================
 
-# Canal destino
-canal_salida = "CANAL_DESTINO"
+client = TelegramClient("bot_session", api_id, api_hash)
 
-# =========================
-# INICIAR CLIENTE
-# =========================
+print("🚀 CONVERSOR DE SEÑALES ACTIVO")
 
-client = TelegramClient("session_bot", api_id, api_hash)
+# =====================================
+# CONVERSOR SIMPLE 4 FORMATOS
+# =====================================
 
-# =========================
-# CONVERSOR DE SEÑALES
-# =========================
+@client.on(events.NewMessage)
+async def convertir(event):
 
-@client.on(events.NewMessage(chats=canal_entrada))
-async def convertir_signal(event):
+    texto = event.raw_text.upper()
 
-    mensaje = event.raw_text
-
-    print("\n========================")
+    print("\n===================")
     print("SEÑAL RECIBIDA")
-    print("========================")
-    print(mensaje)
+    print("===================")
+    print(texto)
 
-    # =========================
-    # CONVERSIÓN SIMPLE
-    # =========================
+    activo = None
+    direccion = None
+    tiempo = None
 
-    nuevo_mensaje = mensaje.upper()
+    # =====================================
+    # DETECTAR ACTIVO
+    # =====================================
 
-    # =========================
-    # ENVIAR
-    # =========================
+    ativos = [
+        "EURUSD",
+        "GBPUSD",
+        "USDJPY",
+        "EURJPY",
+        "AUDCAD",
+        "USDCHF",
+        "EURGBP",
+        "GBPJPY"
+    ]
 
-    await client.send_message(
-        canal_salida,
-        f"🚀 SEÑAL CONVERTIDA 🚀\n\n{nuevo_mensaje}"
-    )
+    for par in ativos:
+        if par in texto:
+            activo = par
+            break
 
-    print("SEÑAL ENVIADA")
+    # =====================================
+    # DETECTAR DIRECCIÓN
+    # =====================================
 
-# =========================
-# EJECUTAR BOT
-# =========================
+    if "CALL" in texto or "COMPRA" in texto or "BUY" in texto:
+        direccion = "CALL"
 
-print("BOT CONVERSOR ACTIVO...")
+    if "PUT" in texto or "VENTA" in texto or "SELL" in texto:
+        direccion = "PUT"
+
+    # =====================================
+    # DETECTAR HORARIO
+    # =====================================
+
+    hora = re.search(r'\d{2}:\d{2}', texto)
+
+    if hora:
+        tiempo = hora.group()
+
+    # =====================================
+    # FORMATO FINAL
+    # =====================================
+
+    if activo and direccion and tiempo:
+
+        mensaje_final = f"""
+🚀 SEÑAL CONVERTIDA 🚀
+
+📊 ACTIVO: {activo}
+⏰ HORA: {tiempo}
+📈 DIRECCIÓN: {direccion}
+⏳ EXPIRACIÓN: M1
+"""
+
+        print(mensaje_final)
+
+        await event.reply(mensaje_final)
+
+    else:
+
+        print("❌ FORMATO NO RECONOCIDO")
+
+# =====================================
+# EJECUTAR
+# =====================================
 
 client.start(phone=telefono)
 client.run_until_disconnected()
