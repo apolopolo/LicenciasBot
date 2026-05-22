@@ -1,39 +1,3 @@
-from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
-import os
-
-# TOKEN desde Render (NO lo pongas aquí en GitHub)
-TOKEN = os.getenv("TOKEN")
-
-zona_horaria = "UTC-5"
-
-def convertir(texto):
-    texto = texto.upper()
-
-    activo = None
-    direccion = None
-    tiempo = None
-
-    pares = [
-        "EURUSD","GBPUSD","USDJPY","EURJPY",
-        "AUDCAD","USDCHF","EURGBP","GBPJPY"
-    ]
-
-    for p in pares:
-        if p in texto:
-            activo = p
-            break
-
-    if "CALL" in texto or "BUY" in texto:
-        direccion = "CALL"
-    elif "PUT" in texto or "SELL" in texto:
-        direccion = "PUT"
-
-    for w in texto.split():
-        if ":" in w:
-            tiempo = w
-
-    if activo and direccion and tiempo:
         return f"""🚀 SEÑAL CONVERTIDA 🚀
 
 Activo: {activo}
