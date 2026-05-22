@@ -5,9 +5,9 @@ import re
 # CONFIG TELEGRAM
 # =====================================
 
-api_id = 12345678
-api_hash = "TU_API_HASH"
-telefono = "+51999999999"
+api_id = 31627477
+api_hash = "4d3e9f5a311e68ed2c6b744b1b3d4d42"
+telefono = "+51972103504"
 
 # =====================================
 # CLIENTE
