@@ -1,105 +1,67 @@
-from telethon import TelegramClient, events
-import re
+from telegram import Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+import os
 
-# =====================================
-# CONFIG TELEGRAM
-# =====================================
+# TOKEN desde Render (NO lo pongas aquí en GitHub)
+TOKEN = os.getenv("TOKEN")
 
-api_id = 31627477
-api_hash = "4d3e9f5a311e68ed2c6b744b1b3d4d42"
-telefono = "+51972103504"
+zona_horaria = "UTC-5"
 
-# =====================================
-# CLIENTE
-# =====================================
-
-client = TelegramClient("bot_session", api_id, api_hash)
-
-print("🚀 CONVERSOR DE SEÑALES ACTIVO")
-
-# =====================================
-# CONVERSOR SIMPLE 4 FORMATOS
-# =====================================
-
-@client.on(events.NewMessage)
-async def convertir(event):
-
-    texto = event.raw_text.upper()
-
-    print("\n===================")
-    print("SEÑAL RECIBIDA")
-    print("===================")
-    print(texto)
+def convertir(texto):
+    texto = texto.upper()
 
     activo = None
     direccion = None
     tiempo = None
 
-    # =====================================
-    # DETECTAR ACTIVO
-    # =====================================
-
-    ativos = [
-        "EURUSD",
-        "GBPUSD",
-        "USDJPY",
-        "EURJPY",
-        "AUDCAD",
-        "USDCHF",
-        "EURGBP",
-        "GBPJPY"
+    pares = [
+        "EURUSD","GBPUSD","USDJPY","EURJPY",
+        "AUDCAD","USDCHF","EURGBP","GBPJPY"
     ]
 
-    for par in ativos:
-        if par in texto:
-            activo = par
+    for p in pares:
+        if p in texto:
+            activo = p
             break
 
-    # =====================================
-    # DETECTAR DIRECCIÓN
-    # =====================================
-
-    if "CALL" in texto or "COMPRA" in texto or "BUY" in texto:
+    if "CALL" in texto or "BUY" in texto:
         direccion = "CALL"
-
-    if "PUT" in texto or "VENTA" in texto or "SELL" in texto:
+    elif "PUT" in texto or "SELL" in texto:
         direccion = "PUT"
 
-    # =====================================
-    # DETECTAR HORARIO
-    # =====================================
-
-    hora = re.search(r'\d{2}:\d{2}', texto)
-
-    if hora:
-        tiempo = hora.group()
-
-    # =====================================
-    # FORMATO FINAL
-    # =====================================
+    for w in texto.split():
+        if ":" in w:
+            tiempo = w
 
     if activo and direccion and tiempo:
+        return f"""🚀 SEÑAL CONVERTIDA 🚀
 
-        mensaje_final = f"""
-🚀 SEÑAL CONVERTIDA 🚀
+Activo: {activo}
+Dirección: {direccion}
+Hora: {tiempo}
+Zona: {zona_horaria}
+Expiración: M1"""
+    
+    return "❌ Señal no válida"
 
-📊 ACTIVO: {activo}
-⏰ HORA: {tiempo}
-📈 DIRECCIÓN: {direccion}
-⏳ EXPIRACIÓN: M1
-"""
+async def mensaje(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(convertir(update.message.text))
 
-        print(mensaje_final)
+async def utc3(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global zona_horaria
+    zona_horaria = "UTC-3"
+    await update.message.reply_text("Zona horaria cambiada a UTC-3")
 
-        await event.reply(mensaje_final)
+async def utc5(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global zona_horaria
+    zona_horaria = "UTC-5"
+    await update.message.reply_text("Zona horaria cambiada a UTC-5")
 
-    else:
+app = Application.builder().token(TOKEN).build()
 
-        print("❌ FORMATO NO RECONOCIDO")
+app.add_handler(CommandHandler("utc3", utc3))
+app.add_handler(CommandHandler("utc5", utc5))
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, mensaje))
 
-# =====================================
-# EJECUTAR
-# =====================================
-
-client.start(phone=telefono)
-client.run_until_disconnected()
+print("BOT CONVERSOR ACTIVO")
+app.run_polling()
