@@ -1,22 +1,39 @@
 import os
+import logging
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    MessageHandler,
+    ContextTypes,
+    filters,
+)
 
-TOKEN = os.getenv("TOKEN")
+logging.basicConfig(level=logging.INFO)
+
+TOKEN = "TU_TOKEN_AQUI"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Bot activo 🚀")
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(update.message.text)
+    await update.message.reply_text(f"Recibido: {update.message.text}")
 
 def main():
-    app = ApplicationBuilder().token(TOKEN).build()
+    try:
+        app = ApplicationBuilder().token(TOKEN).build()
 
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(
+            MessageHandler(filters.TEXT & ~filters.COMMAND, echo)
+        )
 
-    app.run_polling()
+        print("BOT INICIANDO...")
+        app.run_polling()
+
+    except Exception as e:
+        print("ERROR REAL:")
+        print(e)
 
 if __name__ == "__main__":
     main()
