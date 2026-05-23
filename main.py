@@ -11,7 +11,7 @@ from telegram.ext import (
 
 logging.basicConfig(level=logging.INFO)
 
-TOKEN = "TU_TOKEN_AQUI"
+TOKEN = "8853301534:AAFd0x0CAfeaUTvh8GpVvQ0LsNhz_w66erg"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Bot activo 🚀")
